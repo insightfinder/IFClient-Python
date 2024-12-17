@@ -1,0 +1,498 @@
+openapi: 3.1.0
+info:
+  title: InsightFinder Project Settings API
+  version: 1.0.0
+servers:
+  - url: https://app.insightfinder.com
+
+components:
+  securitySchemes:
+    x-csrf-token-header:
+      type: apiKey
+      in: header
+      name: X-CSRF-TOKEN
+      description: Token from the response of the login.py check API.
+    user-agent-header:
+      type: apiKey
+      in: header
+      name: User-Agent
+      description: Should be same as from the request header for login.py check API.
+    username-cookie:
+      type: apiKey
+      in: cookie
+      name: userName
+      description: User/Project Owner for project to be updated and used for login.py check.
+    session-cookie:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Session Cookie created during login.py check.
+
+paths:
+  /api/v1/login-check:
+    post:
+      tags:
+        - Authentication
+      summary: Login API to retrieve token and session ID
+      parameters:
+        - name: userName
+          in: query
+          schema:
+            type: string
+          description: InsightFinder User
+          required: true
+          example: "user"
+        - name: password
+          in: query
+          schema:
+            type: string
+          description: InsightFinder Password
+          required: true
+          example: "password"
+      responses:
+        '200':
+          description: Successful login.py
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      userName:
+                        type: string
+                        # description: InsightFinder User
+                        examples:
+                          - user
+                      email:
+                        type: string
+                        description: User email
+                        examples:
+                          - user@email.com
+                      fullName:
+                        type: string
+                        description: User full name
+                        examples:
+                          - user user
+                      companyName:
+                        type: string
+                        description: Company/Organization of User
+                        examples:
+                          - InsightFinder
+                      licenseKey:
+                        type: string
+                        description: License Key for the user
+                        examples:
+                          - 1kljh90u4n901232342335vdfvd
+                      encryptedLicenseKey:
+                        type: string
+                        description: Encrypterd License Key
+                        examples:
+                          - "%230823no%osdo%jgwe0979%0js023%pqwekp19j"
+                      datausage:
+                        type: string
+                        description: Data Usage
+                        examples:
+                          - 0.0
+                      role:
+                        type: string
+                        description: User's role/access
+                        examples:
+                          - NormalUser
+                      expirationDate:
+                        type: string
+                        description: Expiration date
+                        examples:
+                          - 0
+                      menus:
+                        type: string
+                        description: User's role/access
+                        examples:
+                          - "[{\"id\":\"INCIDENT_PREDICTION\",\"sort\":2},{\"id\":\"UNIFIED_HEALTH_VIEW\",\"sort\":4},{\"id\":\"CAUSAL_ANALYSIS\",\"sort\":9},{\"id\":\"INCIDENT_INVESTIGATION\",\"sort\":1},{\"id\":\"ANOMALY_DETECTION\",\"sort\":6},{\"id\":\"ACTION\",\"sort\":7},{\"id\":\"INSIGHTS_DASHBOARD\",\"sort\":5},{\"id\":\"METRIC_LINE_CHART\",\"sort\":8},{\"id\":\"SERVICE_MAP\",\"sort\":3}]"
+                      projectList:
+                        type: array
+                        description: List of projects under the User
+                        examples:
+                          - [project1:CUSTOM, project2:CUSTOM, project3:CUSTOM]
+                      managedOrganizations:
+                        type: array
+                        description: Managed Organizations
+                        examples:
+                          - []
+                      allowFileUpload:
+                        type: boolean
+                        description: Allow file upload
+                        examples:
+                          - true
+                      isFirstLogin:
+                        type: boolean
+                        description: First time login.py flag
+                        examples:
+                          - false
+                      timezone:
+                        type: string
+                        description: User's timezone
+                        examples:
+                          - US/Eastern
+                  valid:
+                    type: boolean
+                    description: Is account valid
+                    examples:
+                      - true
+                  tokenExpiredTime:
+                    type: number
+                    description: Token expiration time in epoch
+                    examples:
+                      - 1733933166713
+                  token:
+                    type: string
+                    description: Authentication token
+                    examples:
+                      - eyJzZXNzaW9uIjoiZXlKbGVIQnBjbVZrVkdsdFpYTjBZVzF3SWpveE56TXpPVE16TVRZMk56RXpMQ0poYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKcGMzTWlPaUpKUmkxVFJVTlZVa2xVV1NKOS5DRHVDTXFxNk5JbmYxaHBMRlo3VXlDUWNSNWVoY3BHUDVEVGVCd3U2RFc0IiwiVXNlci1BZ2VudCI6ImIyZjZlNTM2YzYwY2I4MGNiZjMxZTY1YTk2YTRiZWFjZWRjZmEwOWIiLCJleHBpcmVkVGltZXN0YW1wIjoxNzMzOTMzMTY2NzEzLCJ1c2VyTmFtZSI6InVzZXIiLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
+  /api/v1/watch-tower-setting:
+    post:
+      tags:
+        - Settings
+      summary: API to update the settings for metric projects
+      security:
+        - x-csrf-token-header: []
+        - user-agent-header: []
+        - username-cookie: []
+        - session-cookie: []
+      parameters:
+        - name: projectName
+          in: query
+          schema:
+            type: string
+          description: Project Name
+          required: true
+          example: "metric-project-1"
+        - name: customerName
+          in: query
+          schema:
+            type: string
+          description: Project Owner
+          required: true
+          example: "user"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cValue:
+                  type: integer
+                  description: Continues value for project, unit is count
+                  examples:
+                    - 1
+                pValue:
+                  type: number
+                  format: float
+                  description: The probability threshold value for UBL.
+                  examples:
+                    - 0.95
+                showInstanceDown:
+                  type: boolean
+                  description: Whether to show instance down incidents for this project.
+                  examples:
+                    - false
+                retentionTime:
+                  type: integer
+                  description: The retention time in days.
+                  examples:
+                    - 15
+                UBLRetentionTime:
+                  type: integer
+                  description: Retention time for UBL data in days.
+                  examples:
+                    - 30
+                projectDisplayName:
+                  type: string
+                  description: The display name of the project.
+                  examples:
+                    - "Project-1"
+                samplingInterval:
+                  type: integer
+                  description: The interval for sampling in seconds. Don't change this unless neccessary
+                  examples:
+                    - 60
+                instanceGroupingData:
+                  type: array
+                  description: List of instance grouping details.
+                  items:
+                    type: object
+                    properties:
+                      instanceName:
+                        type: string
+                        description: The name of the instance.
+                        examples:
+                          - "instance"
+                      containerName:
+                        type: string
+                        description: The name of the container. Required if container project
+                        examples:
+                          - "container"
+                      appName:
+                        type: string
+                        description: Component Name
+                        examples:
+                          - "component"
+                      metricInstanceName:
+                        type: string
+                        description: metricInstanceName. Setting only for log project
+                        examples:
+                          - "metric-instance"
+                      ignoreFlag:
+                        type: boolean
+                        description: Ignore all anomalies on the instance
+                        examples:
+                          - false
+                      instanceDisplayName:
+                        type: string
+                        description: Display name of instance
+                        examples:
+                          - "instance"
+                    required:
+                      - instanceName
+                highRatioCValue:
+                  type: integer
+                  description: c value for those anomaly with 1000% higher than normal, needs to be smaller then normal c value
+                  examples:
+                    - 1
+                dynamicBaselineDetectionFlag:
+                  type: boolean
+                  description: Enable Baseline Detection
+                  examples:
+                    - true
+                positiveBaselineViolationFactor:
+                  type: number
+                  format: float
+                  description: The baseline violation factor for higher than normal detection
+                  examples:
+                    - 2.0
+                negativeBaselineViolationFactor:
+                  type: number
+                  format: float
+                  description: The baseline violation factor for lower than normal detection
+                  examples:
+                    - 2.0
+                enablePeriodAnomalyFilter:
+                  type: boolean
+                  description: Enable period detection, usually false this is very resource consuming
+                  examples:
+                    - false
+                enableUBLDetect:
+                  type: boolean
+                  description: Enable UBL Detection
+                  examples:
+                    - true
+                enableCumulativeDetect:
+                  type: boolean
+                  description: Enable Auto-Cumulative Detection
+                  examples:
+                    - true
+                instanceDownThreshold:
+                  type: integer
+                  description: How long instance down will generate incident, unit is milliseconds
+                  examples:
+                    - 3600000
+                instanceDownReportNumber:
+                  type: integer
+                  description: How many instance down instances will be reported
+                  examples:
+                    - 5
+                instanceDownEnable:
+                  type: boolean
+                  description: Enable instance down report
+                  examples:
+                    - true
+                modelSpan:
+                  type: integer
+                  description: model span setting. 0 is daily, 1 is monthly
+                  examples:
+                    - 0
+                enableMetricDataPrediction:
+                  type: boolean
+                  description: Enable metric data prediction
+                  examples:
+                    - true
+                enableBaselineDetectionDoubleVerify:
+                  type: boolean
+                  description: Enable metric baseline double verification, normally disabled
+                  examples:
+                    - false
+                enableFillGap:
+                  type: boolean
+                  description: Enable metric data gap filling for missing data, normally disabled
+                  examples:
+                    - false
+                patternIdGenerationRule:
+                  type: integer
+                  description: 0 or 1. Generate pattern name and id by metric type(0) or metric name(1)
+                  examples:
+                    - 0
+                anomalyGapToleranceCount:
+                  type: integer
+                  description: Gap tolerance value, 0 means disabled
+                  examples:
+                    - 0
+                filterByAnomalyInBaselineGeneration:
+                  type: boolean
+                  description: Filter out anomaly part when generating baseline, normally false
+                  examples:
+                    - false
+                baselineDuration:
+                  type: integer
+                  description: Baseline block duration, unit is milliseconds
+                  examples:
+                    - 21600000
+                componentMetricSettingOverallModelList:
+                  type: array
+                  description: Settings for Metric Settings Page
+                  items:
+                    type: object
+                    properties:
+                      metricName:
+                        type: string
+                        description: Metric Name
+                        examples:
+                          - "metric1"
+                      isKPI:
+                        type: boolean
+                        description: Set metric as KPI
+                        examples:
+                          - false
+                      escalateIncidentSet:
+                        type: array
+                        description: Set of components' anomalies to be escalated to incident. Another setting for all components below
+                        items:
+                          type: string
+                        examples:
+                          - ["component1, component2, component5"]
+                      escalateIncidentAll:
+                        type: boolean
+                        description: Escalate all components' anomalies to incidents
+                        examples:
+                          - false
+                      patternNameHigher:
+                        type: string
+                        description: Higher than normal pattern name
+                        examples:
+                          - "pattern-higer"
+                      patternNameLower:
+                        type: string
+                        description: Lower than normal pattern name
+                        examples:
+                          - "pattern-lower"
+                      detectionType:
+                        type: string
+                        description: Detection Type. Accepted Values - Positive, Negative, or Both
+                        examples:
+                          - "Positive"
+                      positiveBaselineViolationFactor:
+                        type: number
+                        format: float
+                        description: The baseline violation factor for higher than normal detection
+                        examples:
+                          - 2.0
+                      thresholdAlertLowerBound:
+                        type: number
+                        format: float
+                        description: Float value or empty
+                        examples:
+                      thresholdAlertUpperBound:
+                        type: number
+                        format: float
+                        description: Float value or empty
+                        examples:
+                      thresholdAlertUpperBoundNegative:
+                        type: number
+                        format: float
+                        description: Float value or empty
+                        examples:
+                      thresholdAlertLowerBoundNegative:
+                        type: number
+                        format: float
+                        description: Float value or empty
+                        examples:
+                      thresholdNoAlertLowerBound:
+                        type: number
+                        format: float
+                        description: Float value or empty
+                        examples:
+                      thresholdNoAlertUpperBound:
+                        type: number
+                        format: float
+                        description: Float value or empty
+                        examples:
+                      thresholdNoAlertLowerBoundNegative:
+                        type: number
+                        format: float
+                        description: Float value or empty
+                        examples:
+                      thresholdNoAlertUpperBoundNegative:
+                        type: number
+                        format: float
+                        description: Float value or empty
+                        examples:
+                    required:
+                      - metricName
+                      - thresholdAlertLowerBound
+                      - thresholdAlertUpperBound
+                      - thresholdAlertUpperBoundNegative
+                      - thresholdAlertLowerBoundNegative
+                      - thresholdNoAlertLowerBound
+                      - thresholdNoAlertUpperBound
+                      - thresholdNoAlertLowerBoundNegative
+                      - thresholdNoAlertUpperBoundNegative
+                enableBaselineNearConstance:
+                      type: boolean
+                      description: Enable baseline near constance check
+                      examples:
+                        - false
+                computeDifference:
+                      type: boolean
+                      description: Set if metric is cumulative or not manually
+                      examples:
+                        - false
+              examples:
+                - cValue: 1
+                  pValue: 0.95
+                  showInstanceDown: false
+                  retentionTime: 7
+                  UBLRetentionTime: 30
+                  projectDisplayName: "Project-Display-Name"
+                  instanceGroupingUpdate:
+                    - instanceName: "instance1"
+                      appName: "new-component1"
+                    - instanceName: "instance3"
+                      ignoreFlag: true
+                  componentMetricSettingOverallModelList:
+                    - metricName: "metric1"
+                      escalateIncidentAll: true
+                      thresholdAlertLowerBound:
+                      thresholdAlertUpperBound: 105
+                      thresholdAlertUpperBoundNegative:
+                      thresholdAlertLowerBoundNegative:
+                      thresholdNoAlertLowerBound:
+                      thresholdNoAlertUpperBound: 75
+                      thresholdNoAlertLowerBoundNegative:
+                      thresholdNoAlertUpperBoundNegative:
+                    - metricName: "metric3"
+                      escalateIncidentAll: true
+                      thresholdAlertLowerBound: 1
+                      thresholdAlertUpperBound:
+                      thresholdAlertUpperBoundNegative:
+                      thresholdAlertLowerBoundNegative:
+                      thresholdNoAlertLowerBound:
+                      thresholdNoAlertUpperBound:
+                      thresholdNoAlertLowerBoundNegative:
+                      thresholdNoAlertUpperBoundNegative:
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
