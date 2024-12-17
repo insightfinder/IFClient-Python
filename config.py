@@ -1,7 +1,7 @@
 # Configurations
 base_url = "https://stg.insightfinder.com"
 username = "maoyuwang"
-password = "@pi6Fv@fXALAQmcg9WW"
+password = ""
 projectName = "maoyu-test-api-1"
 user_agent = "Mozilla/5.0 (compatible; InsightFinderClient/1.0;)"
 
