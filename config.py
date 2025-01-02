@@ -1,8 +1,8 @@
 # Configurations
 base_url = "https://stg.insightfinder.com"
-username = "maoyuwang"
+username = ""
 password = ""
-projectName = "maoyu-test-api-1"
+projectName = "Copilot-InsightFinder-V1-0-gpuMetrics"
 user_agent = "Mozilla/5.0 (compatible; InsightFinderClient/1.0;)"
 
 # Metric Project Settings:
