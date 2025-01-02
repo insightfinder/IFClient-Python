@@ -8,12 +8,12 @@ def retrievedatafilter(session: requests.Session, token: str, startTime, endTime
     headers = {"User-Agent": user_agent, "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
                "X-CSRF-TOKEN": token}
     data = {
-        'projectName': projectName,
+        'projectName': projectName + '@' + projectOwner,
         'grouping': 'All',
         "startTimestamp": startTime,
         "endTimestamp": endTime,
-        "instanceList": json.dumps(instance_list),
-        "metricList": json.dumps(metric_list),
+        "instanceList": json.dumps(list(instance_list)),
+        "metricList": json.dumps(list(metric_list)),
         "predictedFlag": True
     }
 

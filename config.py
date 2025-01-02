@@ -1,8 +1,9 @@
 # Configurations
 base_url = "https://stg.insightfinder.com"
-username = ""
+username = "maoyuwang"
 password = ""
-projectName = "Copilot-InsightFinder-V1-0-gpuMetrics"
+projectName = "llm-process-metric2"
+projectOwner = "user"
 user_agent = "Mozilla/5.0 (compatible; InsightFinderClient/1.0;)"
 
 # Metric Project Settings:

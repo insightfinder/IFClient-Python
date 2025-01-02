@@ -4,12 +4,12 @@ import requests
 from config import *
 from urllib.parse import urlencode
 
-def instanceMetaData(session: requests.Session, token: str, instance_list: list[str]):
+def instanceMetaData(session: requests.Session, token: str, instance_list: set[str]):
     headers = {"User-Agent": user_agent, "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
                "X-CSRF-TOKEN": token}
     data = {
-        'idList': json.dumps(instance_list),
-        'projectName': projectName,
+        'idList': json.dumps(list(instance_list)),
+        'projectName': projectName + '@' + projectOwner,
         'instanceGroup': 'All'
     }
 
@@ -17,7 +17,7 @@ def instanceMetaData(session: requests.Session, token: str, instance_list: list[
     url = f"{base_url}/api/v1/instanceMetaData"
 
     # Send POST request
-    response = session.post(url, headers=headers, params={'tzOffset': -18000000}, data=data)
+    response = session.post(url, headers=headers, params={'tzOffset': -18000000}, data=data, timeout=(20, 120))
 
     # Return response
     return response.json()
