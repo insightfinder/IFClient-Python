@@ -21,7 +21,11 @@ def write_csv_file(file_name, content):
 
 def delete_dump_files():
     dump_folder = "dump"
-    shutil.rmtree(dump_folder)
+    if os.path.exists(dump_folder) and os.path.isdir(dump_folder):
+        shutil.rmtree(dump_folder)
+        print(f"Deleted the '{dump_folder}' folder.")
+    else:
+        print(f"The folder '{dump_folder}' does not exist.")
 
 
 def process_csv_files():
@@ -72,6 +76,9 @@ def combine_csv_files(output_file_name):
             # Read the CSV file into a DataFrame
             df = pd.read_csv(file_path)
 
+            # Replace empty cells with NaN
+            df = df.fillna("NaN")
+
             # If 'timestamp' exists
             if 'timestamp' in df.columns:
                 if not timestamp_included:  # Keep the first 'timestamp'
@@ -94,43 +101,83 @@ def combine_csv_files(output_file_name):
 
 
 if __name__ == '__main__':
+    delete_dump_files()
     session = requests.Session()
     token = login(session)
     # update_metric_project_settings(session,token)
 
-    startTime = 1735707600000
-    endTime =   1735848615000
+    from datetime import datetime, timedelta
 
-    project_metadata = loadProjectsMetaDataInfo(session, token, startTime, endTime)['data']
-    instanceSet = project_metadata[0]['instanceStructureSet']
-    instanceIdSet = set()
-    for instance in instanceSet:
-        instanceIdSet.add(instance['i'])
-        for container in instance['c']:
-            instanceIdSet.add(container + '_' + instance['i'])
+    # Define start and end dates
+    start_date = datetime(2024, 12, 6)
+    end_date = datetime(2024, 12, 7)
 
-    instance_metadata = instanceMetaData(session, token, instanceIdSet)['data'][0]
-    metric_list = set()
-    instanceLevelTreeMapNodeInfoMap = json.loads(instance_metadata['result']['instanceLevelTreeMapNodeInfoMap'])
-    containerLevelTreeMapNodeInfoMap = json.loads(instance_metadata['result']['containerLevelTreeMapNodeInfoMap'])
-    for instance in instanceLevelTreeMapNodeInfoMap:
-        instance_info = instanceLevelTreeMapNodeInfoMap[instance]
-        for entry in instance_info['metricModelList']:
-            metric_list.add(entry['metricName'])
+    # Loop through the dates with a time delta of 1 day
+    current_date = start_date
+    while current_date < end_date:
+        start_time = current_date
+        end_time = current_date + timedelta(days=1)
 
-    for container in containerLevelTreeMapNodeInfoMap:
-        for container_info in containerLevelTreeMapNodeInfoMap[container]:
-            for entry_index in range(0,len(container_info['metricModelList'])):
-                entry = container_info['metricModelList'][entry_index]
+        # Print
+        print(f"Downloading data for {start_time} to {end_time}")
+
+        # Convert to Unix timestamps in milliseconds
+        startTime = int(start_time.timestamp() * 1000)
+        endTime = int(end_time.timestamp() * 1000)
+
+        # Download CSV files
+
+        project_metadata = loadProjectsMetaDataInfo(session, token, startTime, endTime)['data']
+        instanceSet = project_metadata[0]['instanceStructureSet']
+        instanceIdSet = set()
+        for instance in instanceSet:
+            instanceIdSet.add(instance['i'])
+            if 'c' in instance:
+                for container in instance['c']:
+                    instanceIdSet.add(container + '_' + instance['i'])
+
+        instance_metadata = instanceMetaData(session, token, instanceIdSet)['data'][0]
+        metric_list = set()
+        instanceLevelTreeMapNodeInfoMap = json.loads(instance_metadata['result']['instanceLevelTreeMapNodeInfoMap'])
+        containerLevelTreeMapNodeInfoMap = json.loads(instance_metadata['result']['containerLevelTreeMapNodeInfoMap'])
+        for instance in instanceLevelTreeMapNodeInfoMap:
+            instance_info = instanceLevelTreeMapNodeInfoMap[instance]
+            for entry in instance_info['metricModelList']:
                 metric_list.add(entry['metricName'])
 
-    metric_raw_data_response = retrievedatafilter(session, token, startTime, endTime, instanceIdSet, metric_list)
-    raw_csv_data = metric_raw_data_response['splitCsvData']
-    for metric_name in raw_csv_data:
-        csv_str = raw_csv_data[metric_name]
-        write_csv_file(str(startTime) + "_" + str(endTime) + "_" + metric_name + ".csv", csv_str)
+        for container in containerLevelTreeMapNodeInfoMap:
+            for container_info in containerLevelTreeMapNodeInfoMap[container]:
+                for entry_index in range(0, len(container_info['metricModelList'])):
+                    entry = container_info['metricModelList'][entry_index]
+                    metric_list.add(entry['metricName'])
 
-    process_csv_files()
-    combine_csv_files(str(startTime) + "_" + str(endTime) + ".csv")
-    delete_dump_files()
+        metric_raw_data_response = retrievedatafilter(session, token, startTime, endTime, instanceIdSet, metric_list)
+        try:
+            raw_csv_data = metric_raw_data_response['splitCsvData']
+        except KeyError:
+            print("KeyError: splitCsvData")
+            print(metric_raw_data_response)
+
+
+            # End
+            delete_dump_files()
+            current_date += timedelta(days=1)
+            continue
+
+
+        for metric_name in raw_csv_data:
+            csv_str = raw_csv_data[metric_name]
+            write_csv_file(
+                str(startTime) + "_" + str(endTime) + "_" + metric_name.replace(" ", "").replace("/", "-") + ".csv",
+                csv_str)
+
+        process_csv_files()
+        combine_csv_files(str(start_time.strftime("%Y-%m-%d")) + "_" + str(end_time.strftime("%Y-%m-%d")) + ".csv")
+        delete_dump_files()
+
+
+        # Add by day
+        current_date += timedelta(days=1)
+
+
 

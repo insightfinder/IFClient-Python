@@ -1,9 +1,9 @@
 # Configurations
-base_url = "https://stg.insightfinder.com"
-username = "maoyuwang"
+base_url = "http://10.0.35.23"
+username = "admin"
 password = ""
-projectName = "llm-process-metric2"
-projectOwner = "user"
+projectName = ""
+projectOwner = ""
 user_agent = "Mozilla/5.0 (compatible; InsightFinderClient/1.0;)"
 
 # Metric Project Settings:
