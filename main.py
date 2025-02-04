@@ -79,6 +79,24 @@ def combine_csv_files(output_file_name):
             # Replace empty cells with NaN
             df = df.fillna("NaN")
 
+            # === Added Functionality Start ===
+            # Identify all columns that contain 'ICMP response time' in their header
+            icmp_cols = [col for col in df.columns if 'ICMP response time' in col]
+
+            for col in icmp_cols:
+                # Convert the column to numeric, coercing errors to NaN (handles "NaN" strings)
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+
+                # Apply the condition: 0 < value < 0.1
+                condition = (df[col] > 0) & (df[col] < 0.3)
+
+                # Multiply qualifying values by 1000
+                df.loc[condition, col] = df.loc[condition, col] * 1000
+            # === Added Functionality End ===
+
+            # Replace empty cells with NaN
+            df = df.fillna("NaN")
+
             # If 'timestamp' exists
             if 'timestamp' in df.columns:
                 if not timestamp_included:  # Keep the first 'timestamp'
@@ -109,12 +127,12 @@ if __name__ == '__main__':
     from datetime import datetime, timedelta
 
     # Define start and end dates
-    start_date = datetime(2024, 12, 6)
-    end_date = datetime(2024, 12, 7)
+    start_date = datetime(2025, 1, 19)
+    end_date = datetime(2025, 1, 28)
 
     # Loop through the dates with a time delta of 1 day
     current_date = start_date
-    while current_date < end_date:
+    while current_date <= end_date:
         start_time = current_date
         end_time = current_date + timedelta(days=1)
 
@@ -172,7 +190,7 @@ if __name__ == '__main__':
                 csv_str)
 
         process_csv_files()
-        combine_csv_files(str(start_time.strftime("%Y-%m-%d")) + "_" + str(end_time.strftime("%Y-%m-%d")) + ".csv")
+        combine_csv_files(str(start_time.strftime("%Y-%m-%d")) + "_" + str(end_time.strftime("%Y-%m-%d")) + "-new" +".csv")
         delete_dump_files()
 
 

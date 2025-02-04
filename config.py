@@ -1,6 +1,6 @@
 # Configurations
-base_url = "http://10.0.35.23"
-username = "admin"
+base_url = "https://app.insightfinder.com"
+username = "maoyuwang"
 password = ""
 projectName = ""
 projectOwner = ""
