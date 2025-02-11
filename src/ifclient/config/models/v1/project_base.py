@@ -1,11 +1,25 @@
 from pydantic import BaseModel, Field
-from typing import Literal, Optional
+from typing import Literal, Optional, Union, List
 from ifclient.config.models.common.file_reference import FileReference
+from ifclient.config.models.v1.instance_grouping import InstanceGrouping
+from ifclient.config.models.v1.component_metric import MetricSetting
 
 
 class ProjectBaseV1(BaseModel):
     apiVersion: Literal["v1"]
     type: Literal["projectBase"]
+
+    project: str = Field(
+        ...,
+        description="Project name on InsightFinder to apply the following settings to"
+    )
+
+    userName: str = Field(
+        ...,
+        description="username of the user owning the project"
+    )
+
+    # Common settings for both log and metric projects
     cValue: Optional[int] = Field(
         default=None,
         description="Continues value for project, unit is count",
@@ -41,6 +55,27 @@ class ProjectBaseV1(BaseModel):
         description="The interval for sampling in seconds. Don't change this unless necessary",
         examples=[60]
     )
+
+    instanceGroupingUpdate: Union[None, FileReference, InstanceGrouping] = Field(
+        default=None,
+        description="File paths to instanceGroupingData configurations",
+        examples=[
+            "/abs/path/to/config/files/group1.yaml",
+            "./relative/path/to/config/files/group2.yaml",
+            "./relative/path/with/wilcards/*.yaml"
+        ]
+    )
+    componentMetricSettingOverallModelList: Union[None, FileReference, List[MetricSetting]] = Field(
+        default=None,
+        description="File paths to componentMetricSettingOverallModelList configurations",
+        examples=[
+            "/abs/path/to/config/files/group1.yaml",
+            "./relative/path/to/config/files/group2.yaml",
+            "./relative/path/with/wilcards/*.yaml"
+        ]
+    )
+
+    # Following settings applicable for only metric projects
     highRatioCValue: Optional[int] = Field(
         default=None,
         description="c value for those anomaly with 1000% higher than normal, needs to be smaller than normal c value",
@@ -132,35 +167,7 @@ class ProjectBaseV1(BaseModel):
         examples=[21600000]
     )
 
-    enableBaselineNearConstance: Optional[bool] = Field(
-        default=None,
-        description="Enable baseline near constance check",
-        examples=[False]
-    )
     
-    computeDifference: Optional[bool] = Field(
-        default=None,
-        description="Set if metric is cumulative or not manually",
-        examples=[False]
-    )
-
-    instanceGroupingDataFilePaths: Optional[FileReference] = Field(
-        default=None,
-        description="File paths to instanceGroupingData configurations",
-        examples=[
-            "/abs/path/to/config/files/group1.yaml",
-            "./relative/path/to/config/files/group2.yaml",
-            "./relative/path/with/wilcards/*.yaml"
-        ]
-    )
-    consumerMetricSettingFilePaths: Optional[FileReference] = Field(
-        default=None,
-        description="File paths to consumerMetricSettingOverallModelList configurations",
-        examples=[
-            "/abs/path/to/config/files/group1.yaml",
-            "./relative/path/to/config/files/group2.yaml",
-            "./relative/path/with/wilcards/*.yaml"
-        ]
-    )
+    
 
 

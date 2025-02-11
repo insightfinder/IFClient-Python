@@ -11,7 +11,8 @@ def validate_cmd(config_file, skip_empty_files):
     Validate the provided configuration file (and all referenced files).
     """
     try:
-        validate_and_resolve(config_file, skip_empty_files)
+        validated_record = validate_and_resolve(config_file, skip_empty_files, is_main=True)
+        print(validated_record)
         click.echo(f"Configuration is valid.")
     except ValidationError as e:
         click.echo(f"Validation error: {e}")

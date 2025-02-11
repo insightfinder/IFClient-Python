@@ -2,8 +2,6 @@ from pydantic import BaseModel, Field
 from typing import Optional, List, Literal
 
 
-   
-
 class MetricSetting(BaseModel):
     # Required fields
     metricName: str = Field(
@@ -89,7 +87,7 @@ class MetricSetting(BaseModel):
         examples=[2.0]
     )
 
-class ConsumerMetricSettingV1(BaseModel):
+class ComponentMetricSettingV1(BaseModel):
     apiVersion: Literal["v1"]
     type: Literal["consumerMetricSetting"]
     metric_settings: Optional[List[MetricSetting]] = Field(

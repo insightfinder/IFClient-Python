@@ -33,11 +33,16 @@ class Instance(BaseModel):
         examples=["instance"]
     )
 
+class InstanceGrouping(BaseModel):
+    instanceDataList: Optional[List[Instance]] = Field(
+        default=None,
+        description="List of instances"
+    )
 
 class InstanceGroupingSettingV1(BaseModel):
     apiVersion: Literal["v1"]
     type: Literal["instanceGroupingSetting"]
-    instances: Optional[List[Instance]] = Field(
+    instanceDataList: Optional[List[Instance]] = Field(
         default=None,
         description="List of instances"
     )

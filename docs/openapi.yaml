@@ -219,44 +219,48 @@ paths:
                   description: The interval for sampling in seconds. Don't change this unless neccessary
                   examples:
                     - 60
-                instanceGroupingData:
-                  type: array
-                  description: List of instance grouping details.
-                  items:
-                    type: object
-                    properties:
-                      instanceName:
-                        type: string
-                        description: The name of the instance.
-                        examples:
-                          - "instance"
-                      containerName:
-                        type: string
-                        description: The name of the container. Required if container project
-                        examples:
-                          - "container"
-                      appName:
-                        type: string
-                        description: Component Name
-                        examples:
-                          - "component"
-                      metricInstanceName:
-                        type: string
-                        description: metricInstanceName. Setting only for log project
-                        examples:
-                          - "metric-instance"
-                      ignoreFlag:
-                        type: boolean
-                        description: Ignore all anomalies on the instance
-                        examples:
-                          - false
-                      instanceDisplayName:
-                        type: string
-                        description: Display name of instance
-                        examples:
-                          - "instance"
-                    required:
-                      - instanceName
+                instanceGroupingUpdate:
+                  type: object
+                  description: Object containing details for instance grouping updates
+                  properties:
+                    instanceDataList:
+                      type: array
+                      description: List of instance grouping details.
+                      items:
+                        type: object
+                        properties:
+                          instanceName:
+                            type: string
+                            description: The name of the instance.
+                            examples:
+                              - "instance"
+                          containerName:
+                            type: string
+                            description: The name of the container. Required if container project
+                            examples:
+                              - "container"
+                          appName:
+                            type: string
+                            description: Component Name
+                            examples:
+                              - "component"
+                          metricInstanceName:
+                            type: string
+                            description: metricInstanceName. Setting only for log project
+                            examples:
+                              - "metric-instance"
+                          ignoreFlag:
+                            type: boolean
+                            description: Ignore all anomalies on the instance
+                            examples:
+                              - false
+                          instanceDisplayName:
+                            type: string
+                            description: Display name of instance
+                            examples:
+                              - "instance"
+                        required:
+                          - instanceName
                 highRatioCValue:
                   type: integer
                   description: c value for those anomaly with 1000% higher than normal, needs to be smaller then normal c value
@@ -438,6 +442,16 @@ paths:
                         format: float
                         description: Float value or empty
                         examples:
+                      enableBaselineNearConstance:
+                        type: boolean
+                        description: Enable baseline near constance check
+                        examples:
+                          - false
+                      computeDifference:
+                        type: boolean
+                        description: Set if metric is cumulative or not manually
+                        examples:
+                          - false
                     required:
                       - metricName
                       - thresholdAlertLowerBound
@@ -448,16 +462,7 @@ paths:
                       - thresholdNoAlertUpperBound
                       - thresholdNoAlertLowerBoundNegative
                       - thresholdNoAlertUpperBoundNegative
-                enableBaselineNearConstance:
-                      type: boolean
-                      description: Enable baseline near constance check
-                      examples:
-                        - false
-                computeDifference:
-                      type: boolean
-                      description: Set if metric is cumulative or not manually
-                      examples:
-                        - false
+                
               examples:
                 - cValue: 1
                   pValue: 0.95
@@ -466,10 +471,11 @@ paths:
                   UBLRetentionTime: 30
                   projectDisplayName: "Project-Display-Name"
                   instanceGroupingUpdate:
-                    - instanceName: "instance1"
-                      appName: "new-component1"
-                    - instanceName: "instance3"
-                      ignoreFlag: true
+                    instanceDataList:
+                      - instanceName: "instance1"
+                        appName: "new-component1"
+                      - instanceName: "instance3"
+                        ignoreFlag: true
                   componentMetricSettingOverallModelList:
                     - metricName: "metric1"
                       escalateIncidentAll: true
