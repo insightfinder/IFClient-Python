@@ -1,13 +1,25 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Literal, Optional, Union, List
 from ifclient.config.models.common.file_reference import FileReference
-from ifclient.config.models.v1.instance_grouping import InstanceGrouping
-from ifclient.config.models.v1.component_metric import MetricSetting
-
+from ifclient.config.models.v1.instance_grouping import InstanceGrouping, InstanceGroupingSettingV1
+from ifclient.config.models.v1.component_metric import MetricSetting, ComponentMetricSettingV1
 
 class ProjectBaseV1(BaseModel):
-    apiVersion: Literal["v1"]
-    type: Literal["projectBase"]
+
+    model_config = ConfigDict(
+        validate_assignment=True
+    )
+
+    apiVersion: Literal["v1"] = Field(
+        ...,
+        description="API Version",
+        exclude=True
+    )
+    type: Literal["projectBase"] = Field(
+        ...,
+        description="Type of configuration",
+        exclude=True
+    )
 
     project: str = Field(
         ...,
@@ -56,7 +68,7 @@ class ProjectBaseV1(BaseModel):
         examples=[60]
     )
 
-    instanceGroupingUpdate: Union[None, FileReference, InstanceGrouping] = Field(
+    instanceGroupingUpdate: Union[None, FileReference, InstanceGrouping, List[InstanceGroupingSettingV1]] = Field(
         default=None,
         description="File paths to instanceGroupingData configurations",
         examples=[
@@ -65,7 +77,7 @@ class ProjectBaseV1(BaseModel):
             "./relative/path/with/wilcards/*.yaml"
         ]
     )
-    componentMetricSettingOverallModelList: Union[None, FileReference, List[MetricSetting]] = Field(
+    componentMetricSettingOverallModelList: Union[None, FileReference, List[MetricSetting], List[ComponentMetricSettingV1]] = Field(
         default=None,
         description="File paths to componentMetricSettingOverallModelList configurations",
         examples=[
@@ -166,6 +178,7 @@ class ProjectBaseV1(BaseModel):
         description="Baseline block duration, unit is milliseconds",
         examples=[21600000]
     )
+
 
     
     

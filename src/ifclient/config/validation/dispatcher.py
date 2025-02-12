@@ -62,6 +62,8 @@ def validate_and_resolve(file_path: str, skip_empty_files: bool, forced_version:
     Validate a configuration file and its sub configurations.
     
     Use validate_main_config if is_main is True; otherwise, force sub config validation with forced_version.
+
+    This is used to enforce a specific version config to use the same version sub-configs.
     """
     try:
         print(f"Validating file {file_path}")
@@ -87,16 +89,25 @@ def validate_and_resolve(file_path: str, skip_empty_files: bool, forced_version:
         validated_file_references = {
             name: value for name, value in validated.__dict__.items() if isinstance(value, FileReference)
         }
-        for name, value in validated_file_references.items():
-            parent_dir = os.path.dirname(file_path)
-            resolved_paths = [
-                glob.glob(path if os.path.isabs(path) else os.path.abspath(os.path.join(parent_dir, path)))
-                for path in value.files
-            ]
-            resolved_paths_flattened = list(set(itertools.chain(*resolved_paths)))
-            setattr(getattr(validated, name), 'files', resolved_paths_flattened)
-            for ref_file in resolved_paths_flattened:
-                # For sub configurations, always pass forced_version.
-                validate_and_resolve(ref_file, skip_empty_files, forced_version=version, is_main=False)
+        if len(validated_file_references) > 0:
+            for name, value in validated_file_references.items():
+                parent_dir = os.path.dirname(file_path)
+                resolved_paths = [
+                    glob.glob(path if os.path.isabs(path) else os.path.abspath(os.path.join(parent_dir, path)))
+                    for path in value.files
+                ]
+                resolved_paths_flattened = list(set(itertools.chain(*resolved_paths)))
+                setattr(getattr(validated, name), 'files', resolved_paths_flattened)
+                paths_to_objects_list = []
+                for ref_file in resolved_paths_flattened:
+                    # For sub configurations, always pass forced_version.
+                    model = validate_and_resolve(ref_file, skip_empty_files, forced_version=version, is_main=False)
+                    if model is not None:
+                        paths_to_objects_list.append(model)
+                if len(paths_to_objects_list) > 0:
+                    setattr(validated, name, paths_to_objects_list)
+                else:
+                    setattr(validated, name, None)
+            
         return validated
 

@@ -88,9 +88,20 @@ class MetricSetting(BaseModel):
     )
 
 class ComponentMetricSettingV1(BaseModel):
-    apiVersion: Literal["v1"]
-    type: Literal["consumerMetricSetting"]
-    metric_settings: Optional[List[MetricSetting]] = Field(
+
+    apiVersion: Literal["v1"] = Field(
+        ...,
+        description="API Version",
+        exclude=True
+    )
+
+    type: Literal["consumerMetricSetting"] = Field(
+        ...,
+        description="Type of configuration",
+        exclude=True
+    )
+
+    metricSettings: Optional[List[MetricSetting]] = Field(
         default=None,
         description="List of instances"
     )

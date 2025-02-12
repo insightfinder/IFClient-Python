@@ -40,8 +40,20 @@ class InstanceGrouping(BaseModel):
     )
 
 class InstanceGroupingSettingV1(BaseModel):
-    apiVersion: Literal["v1"]
-    type: Literal["instanceGroupingSetting"]
+
+    
+    apiVersion: Literal["v1"] = Field(
+        ...,
+        description="API Version",
+        exclude=True
+    )
+
+    type: Literal["instanceGroupingSetting"] = Field(
+        ...,
+        description="Type of configuration",
+        exclude=True
+    )
+
     instanceDataList: Optional[List[Instance]] = Field(
         default=None,
         description="List of instances"
