@@ -1,0 +1,48 @@
+apiVersion: v1 # Configuration version
+type: projectBase # Type of schema
+
+# Required fields to identify projet and owner
+project: "user-sample-metric-project"
+userName: "user1"
+
+# Optional fields for settings
+projectDisplayName: "Custom Metric Project"
+cValue: 1
+pValue: 0.95
+showInstanceDown: true
+retentionTime: 50
+UBLRetentionTime: 10
+modelSpan: 0
+dynamicBaselineDetectionFlag: true
+instanceGroupingUpdate:
+  # Instead of providing paths to files you can also provide the instance settings directly here
+  instanceDataList:
+    - instanceName: "CONFIRMED"
+      instanceDisplayName: "Confirmed"
+      ignoreFlag: true
+    - instanceName: "NEW"
+      instanceDisplayName: "New"
+      ignoreFlag: false
+componentMetricSettingOverallModelList:
+  # Instead of providign
+  - metricName: "metric1"
+    escalateIncidentAll: true
+    thresholdAlertLowerBound: 15
+    thresholdAlertUpperBound: 105
+    thresholdAlertUpperBoundNegative: -20
+    thresholdAlertLowerBoundNegative: -5
+    thresholdNoAlertLowerBound: 50
+    thresholdNoAlertUpperBound: 75
+    thresholdNoAlertLowerBoundNegative: 20
+    thresholdNoAlertUpperBoundNegative: 40
+
+  - metricName: "metric2"
+    escalateIncidentAll: true
+    thresholdAlertLowerBound: 15
+    thresholdAlertUpperBound: 105
+    thresholdAlertUpperBoundNegative: -20
+    thresholdAlertLowerBoundNegative: -5
+    thresholdNoAlertLowerBound: 50
+    thresholdNoAlertUpperBound: 75
+    thresholdNoAlertLowerBoundNegative: 20
+    thresholdNoAlertUpperBoundNegative: 40

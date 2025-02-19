@@ -3,8 +3,9 @@ import requests
 import os
 import json
 import time
+from ifclient.utils.logger import setup_logger
 
-USER_AGENT="IfClient/"
+logger = setup_logger(__name__)
 
 def apply_config(project: Dict, baseUrl: str):
 
@@ -28,7 +29,7 @@ def update_project_config(baseUrl: str, username: str, token: str, project: str,
             "customerName": username
         }
 
-        print(f"Sending data: {json.dumps(project['data'], indent=4)}")
+        logger.info(f"Sending data for project {project['name']}: {json.dumps(project['data'], indent=4)}")
         update_response = session.post(update_url, params=params, headers={"Content-Type": "application/json", "X-CSRF-TOKEN": token}, json=project['data']) 
         
         time.sleep(1)

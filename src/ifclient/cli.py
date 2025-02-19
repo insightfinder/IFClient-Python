@@ -1,11 +1,13 @@
 # client/cli.py
 import click
 from ifclient.commands import validate, plan, generate, apply
+from dotenv import load_dotenv
 
 @click.group()
 def cli():
     """A CLI tool for managing configurations and applying API calls."""
-    pass
+
+    load_dotenv()
 
 cli.add_command(validate.validate_cmd)
 # cli.add_command(plan.plan_cmd)

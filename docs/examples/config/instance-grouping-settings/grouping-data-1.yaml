@@ -1,0 +1,9 @@
+apiVersion: v1
+type: instanceGroupingSetting
+instanceDataList:
+  - instanceName: "CONFIRMED"
+    instanceDisplayName: "Confirmed"
+    ignoreFlag: true
+  - instanceName: "NEW"
+    instanceDisplayName: "New"
+    ignoreFlag: false

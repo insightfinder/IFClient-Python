@@ -5,13 +5,16 @@ from ifclient.config.models.v1.component_metric import ComponentMetricSettingV1,
 from typing import Dict, Any, List
 from itertools import chain
 import json
+from ifclient.utils.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 def config_merge(tool_config: ToolConfigV1) -> Dict[str, Any]:
 
     try:
 
         if tool_config.projectBaseConfigs is None:
-            print("No projects to apply configurations for. Exiting")
+            logger.info("No projects to apply or generate configurations for. Exiting")
             return None
 
         project_configs = []
@@ -61,5 +64,5 @@ def config_merge(tool_config: ToolConfigV1) -> Dict[str, Any]:
         return config
 
     except Exception as e:
-        print("An exception occured while merging the configurations")
+        logger.error("An exception occured while merging the configurations")
         raise e
