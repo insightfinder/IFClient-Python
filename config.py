@@ -2,7 +2,7 @@
 base_url = "https://stg.insightfinder.com"
 username = "maoyuwang"
 password = ""
-projectName = "maoyu-test-api-1"
+systemID = "e802b01d8339176d8dcfc58493813e28e520d615"
 user_agent = "Mozilla/5.0 (compatible; InsightFinderClient/1.0;)"
 
 # Metric Project Settings:
@@ -52,15 +52,8 @@ metric_project_settings = {
     ]
 }
 
-project_keywords_settings = [{
-    "type": "fieldName",
-    "keyword": "aaaaa=111 AND bbb=222 AND ccc=333",
-    "countThreshold": 0,
-    "order": 1,
-    "patternNameLabels": [{
-        "patternName": "ddddd",
-        "type": "fieldName",
-        "order": 1,
-        "patternNameKey": "eeeee"
-    }]
-}]
+project_keywords_settings = [{"type":"fieldName",
+                              "keyword":"name=^(?!.*(High ICMP ping response time|Link down)).*$ AND value=1 AND severity=4|5",
+                              "countThreshold":0,
+                              "order":1,
+                              "patternNameLabels":[{"type":"fieldName","order":1,"patternNameKey":"name"}]}]
