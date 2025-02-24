@@ -9,6 +9,7 @@ if __name__ == '__main__':
     session = requests.Session()
     token = login(session)
 
-    for project_name in get_projects_in_system(session,token,systemID):
+    for project_name in get_projects_in_system(session,token,systemID,"metric"):
         update_metric_project_settings(session, token, project_name, username)
+    for project_name in get_projects_in_system(session, token, systemID, "log"):
         update_project_keywords(session,token,project_name,project_keywords_settings)

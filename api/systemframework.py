@@ -35,12 +35,20 @@ def get_system_framework(session: requests.Session,token: str):
 
 
 
-def get_projects_in_system(session: requests.Session,token: str, systemID: str):
+def get_projects_in_system(session: requests.Session,token: str, systemID: str, type: str):
     systemFramework = get_system_framework(session,token)
     system_json = systemFramework.get(systemID)
     raw_project_list = system_json['projectDetailsList']
     projectList = []
     for project in raw_project_list:
-        projectList.append(project['projectName'])
+
+        # Filter by project type
+        if type.lower() == "all":
+            projectList.append(project['projectName'])
+        elif type.lower() == "log" and project['dataType'].lower() == "log":
+            projectList.append(project['projectName'])
+        elif type.lower() == "metric" and project['dataType'].lower() == "metric":
+            projectList.append(project['projectName'])
+
 
     return projectList
