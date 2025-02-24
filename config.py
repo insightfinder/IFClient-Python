@@ -51,3 +51,16 @@ metric_project_settings = {
         }
     ]
 }
+
+project_keywords_settings = [{
+    "type": "fieldName",
+    "keyword": "aaaaa=111 AND bbb=222 AND ccc=333",
+    "countThreshold": 0,
+    "order": 1,
+    "patternNameLabels": [{
+        "patternName": "ddddd",
+        "type": "fieldName",
+        "order": 1,
+        "patternNameKey": "eeeee"
+    }]
+}]
