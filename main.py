@@ -11,5 +11,5 @@ if __name__ == '__main__':
 
     for project_name in get_projects_in_system(session,token,systemID,"metric"):
         update_metric_project_settings(session, token, project_name, username)
-    for project_name in get_projects_in_system(session, token, systemID, "log"):
+    for project_name in get_projects_in_system(session, token, systemID, "alert"):
         update_project_keywords(session,token,project_name,project_keywords_settings)

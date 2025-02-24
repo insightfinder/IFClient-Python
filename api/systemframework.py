@@ -49,6 +49,8 @@ def get_projects_in_system(session: requests.Session,token: str, systemID: str, 
             projectList.append(project['projectName'])
         elif type.lower() == "metric" and project['dataType'].lower() == "metric":
             projectList.append(project['projectName'])
+        elif type.lower() == "alert" and project['dataType'].lower() == "alert":
+            projectList.append(project['projectName'])
 
 
     return projectList
