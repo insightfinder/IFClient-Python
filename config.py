@@ -5,7 +5,11 @@ password = ""
 systemID = "e802b01d8339176d8dcfc58493813e28e520d615"
 user_agent = "Mozilla/5.0 (compatible; InsightFinderClient/1.0;)"
 
-# Metric Project Settings:
+# Settings:
+# 1. If the configuration value is missing or set to None. The script will not touch the settings.
+# 2. If the config value is set to an empty list, the existing value will be cleared.
+# 3. Other values will apply the value to IF.
+
 metric_project_settings = {
     "cValue": 1,
     "pValue": 0.95,
