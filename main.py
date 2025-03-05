@@ -7,6 +7,8 @@ from config import project_keywords_settings, username,systemID
 from api.loadProjectsMetaDataInfo import list_instances_in_project
 from api.agentUploadInstanceMetadata import batch_update_instance_component_name
 from tabulate import tabulate
+from config import component_level_pattern_name_settings
+import json
 
 def generate_component_name_from_instance_name(instance_name: str) -> str:
     result = instance_name
@@ -22,7 +24,7 @@ def generate_component_name_from_instance_name(instance_name: str) -> str:
     elif instance_name.lower().find("isp") != -1:
         result = "ISP"
 
-    elif instance_name.lower().find("mikrotik") != -1:
+    elif instance_name.lower().find("mikrotik") != -1 or instance_name.lower().find("microtik") != -1:
         result = "Mikrotik"
 
     elif instance_name.lower().find("esxi") != -1:
@@ -39,6 +41,9 @@ def generate_component_name_from_instance_name(instance_name: str) -> str:
 
     elif instance_name.lower().find("ap") != -1:
         result = "AP"
+
+    elif instance_name.lower().find("smartbox") != -1:
+        result = "Smartbox"
 
     elif instance_name.lower().find("wan") != -1:
         result = "WAN"
@@ -67,16 +72,20 @@ if __name__ == '__main__':
     # for project_name in get_projects_in_system(session, token, systemID, "alert"):
     #     update_project_keywords(session,token,project_name,project_keywords_settings)
 
+    # all_projects = get_projects_in_system(session, token, systemID, "all")
+    # for project in all_projects:
+    #     instances = list_instances_in_project(session,token,project)
+    #     project_component_instance_mapping = dict()
+    #     for instance in instances:
+    #         project_component_instance_mapping[instance] = generate_component_name_from_instance_name(instance)
+        # table_data = [(key, value) for key, value in project_component_instance_mapping.items()]
+        # print(tabulate(table_data, headers=["instanceName", "componentName"], tablefmt="grid"))
+        # input("Press Enter to continue...")
+        # batch_update_instance_component_name(project,project_component_instance_mapping)
+
     metric_projects = get_projects_in_system(session, token, systemID, "metric")
     for project in metric_projects:
-        instances = list_instances_in_project(session,token,project)
-        project_component_instance_mapping = dict()
-        for instance in instances:
-            project_component_instance_mapping[instance] = generate_component_name_from_instance_name(instance)
-        table_data = [(key, value) for key, value in project_component_instance_mapping.items()]
-        print(tabulate(table_data, headers=["instanceName", "componentName"], tablefmt="grid"))
-        input("Press Enter to confirm...")
-        batch_update_instance_component_name(project,project_component_instance_mapping)
+        update_metric_project_settings(session, token, project, component_level_pattern_name_settings)
 
 
 

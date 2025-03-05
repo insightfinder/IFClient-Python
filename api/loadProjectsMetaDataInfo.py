@@ -16,7 +16,12 @@ def loadProjectsMetaDataInfo(session: requests.Session, token: str ,projectName)
 def list_instances_in_project(session: requests.Session, token: str ,projectName):
     result = list()
     project_metadata = loadProjectsMetaDataInfo(session, token,projectName)
-    instances_dict = project_metadata["data"][0]['instanceStructureSet']
+
+    if 'instanceStructureSet' not in project_metadata["data"][0]:
+        print("Error to find instanceStructureSet for project ", projectName,project_metadata["data"][0] )
+        return result
+
+    instances_dict = project_metadata["data"][0]["instanceStructureSet"]
     for entry in instances_dict:
         result.append(entry['i'])
 

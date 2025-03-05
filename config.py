@@ -3,7 +3,7 @@ base_url = "https://stg.insightfinder.com"
 username = "maoyuwang"
 password = ""
 license_key = ""
-systemID = "fc52b68c10e22c61b5b59ce125969aa0deac4151"
+systemID = ""
 user_agent = "Mozilla/5.0 (compatible; InsightFinderClient/1.0;)"
 
 # Settings:
@@ -54,6 +54,32 @@ metric_project_settings = {
             "thresholdNoAlertLowerBoundNegative": None,
             "thresholdNoAlertUpperBoundNegative": None
         }
+    ]
+}
+
+component_level_pattern_name_settings = {
+    "componentMetricSettingOverallModelList": [
+        {
+            "metricName": "ICMP loss",
+            "patternNameHigher": "ICMP loss",
+            "isKPI": True,
+            "kpiDurationThreshold": 1
+        },
+        {
+            "metricName": "ICMP loss",
+            "componentName": "CPE",
+            "patternNameHigher": "CPE outage",
+            "isKPI": True,
+            "kpiDurationThreshold": 1
+        },
+        {
+            "metricName": "ICMP loss",
+            "componentName": "ISP",
+            "patternNameHigher": "ISP Outage",
+            "isKPI": True,
+            "kpiDurationThreshold": 1,
+            "enableBaselineNearConstance": True
+        },
     ]
 }
 
