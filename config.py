@@ -2,7 +2,8 @@
 base_url = "https://stg.insightfinder.com"
 username = "maoyuwang"
 password = ""
-systemID = "e802b01d8339176d8dcfc58493813e28e520d615"
+license_key = ""
+systemID = "fc52b68c10e22c61b5b59ce125969aa0deac4151"
 user_agent = "Mozilla/5.0 (compatible; InsightFinderClient/1.0;)"
 
 # Settings:
