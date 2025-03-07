@@ -5,16 +5,20 @@ from api.projectkeywords import update_project_keywords
 from api.systemframework import get_projects_in_system
 from config import project_keywords_settings, username,systemID
 from api.loadProjectsMetaDataInfo import list_instances_in_project
-from api.agentUploadInstanceMetadata import batch_update_instance_component_name
+from api.agentUploadInstanceMetadata import batch_update_instance_component_name,batch_update_zone_name
 from tabulate import tabulate
 from config import component_level_pattern_name_settings
 import json
+from api.groupingstorage import get_zones_for_instances
 
 def generate_component_name_from_instance_name(instance_name: str) -> str:
     result = instance_name
 
+    if instance_name.lower().find("he-swt") != -1 or instance_name.lower().find("he-sw") != -1:
+        result = "HE-SW"
+
     # 1. Convert all swt to Switch
-    if instance_name.lower().find("swt") != -1 or instance_name.lower().find("sw") != -1 or instance_name.lower().find("switch") != -1:
+    elif instance_name.lower().find("swt") != -1 or instance_name.lower().find("sw") != -1 or instance_name.lower().find("switch") != -1:
         result = "Switch"
 
     # 2.
@@ -67,29 +71,48 @@ if __name__ == '__main__':
     session = requests.Session()
     token = login(session)
 
-    # for project_name in get_projects_in_system(session,token,systemID,"metric"):
-    #     update_metric_project_settings(session, token, project_name, username)
     # for project_name in get_projects_in_system(session, token, systemID, "alert"):
     #     update_project_keywords(session,token,project_name,project_keywords_settings)
 
-    # all_projects = get_projects_in_system(session, token, systemID, "all")
-    # for project in all_projects:
-    #     instances = list_instances_in_project(session,token,project)
-    #     project_component_instance_mapping = dict()
-    #     for instance in instances:
-    #         project_component_instance_mapping[instance] = generate_component_name_from_instance_name(instance)
+    all_projects = get_projects_in_system(session, token, systemID, "all")
+    for project in all_projects:
+        instances = list_instances_in_project(session,token,project)
+        project_component_instance_mapping = dict()
+        for instance in instances:
+            project_component_instance_mapping[instance] = generate_component_name_from_instance_name(instance)
+
         # table_data = [(key, value) for key, value in project_component_instance_mapping.items()]
         # print(tabulate(table_data, headers=["instanceName", "componentName"], tablefmt="grid"))
-        # input("Press Enter to continue...")
-        # batch_update_instance_component_name(project,project_component_instance_mapping)
-
-    metric_projects = get_projects_in_system(session, token, systemID, "metric")
-    for project in metric_projects:
-        update_metric_project_settings(session, token, project, component_level_pattern_name_settings)
+        batch_update_instance_component_name(project,project_component_instance_mapping)
 
 
 
+    # metric_projects = get_projects_in_system(session, token, systemID, "metric")
+    # for project in metric_projects:
+    #     update_metric_project_settings(session, token, project, component_level_pattern_name_settings)
 
+
+
+
+    # project_zone_mapping = dict()
+    # metric_projects = get_projects_in_system(session, token, systemID, "metric")
+    # for project in metric_projects:
+    #     instances = list_instances_in_project(session, token, project)
+    #     if len(instances) == 0:
+    #         zones = dict()
+    #     else:
+    #         zones = get_zones_for_instances(session, token, project, instances)
+    #
+    #     common_project_name = project.replace("-metrics-1","").replace("-metrics","")
+    #     project_zone_mapping[common_project_name] = zones
+    #
+    # alert_projects = get_projects_in_system(session, token, systemID, "alert")
+    # for project in alert_projects:
+    #     instances = list_instances_in_project(session, token, project)
+    #     common_project_name = project.replace("-problems-1","").replace("-problems","")
+    #     zones = project_zone_mapping[common_project_name]
+    #     if len(zones) != 0:
+    #         batch_update_zone_name(project,zones)
 
 
 
