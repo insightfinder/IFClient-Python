@@ -1,9 +1,10 @@
 import requests
 from api.login import login
+from api.systemframework import update_system_for_project
 from api.update_metric_project_settings import update_metric_project_settings
 from api.projectkeywords import update_project_keywords
 from api.systemframework import get_projects_in_system
-from config import project_keywords_settings, username,systemID
+from config import project_keywords_settings, username
 from api.loadProjectsMetaDataInfo import list_instances_in_project
 from api.agentUploadInstanceMetadata import batch_update_instance_component_name,batch_update_zone_name
 from tabulate import tabulate
@@ -74,16 +75,16 @@ if __name__ == '__main__':
     # for project_name in get_projects_in_system(session, token, systemID, "alert"):
     #     update_project_keywords(session,token,project_name,project_keywords_settings)
 
-    all_projects = get_projects_in_system(session, token, systemID, "all")
-    for project in all_projects:
-        instances = list_instances_in_project(session,token,project)
-        project_component_instance_mapping = dict()
-        for instance in instances:
-            project_component_instance_mapping[instance] = generate_component_name_from_instance_name(instance)
+    # all_projects = get_projects_in_system(session, token, systemID, "all")
+    # for project in all_projects:
+    #     instances = list_instances_in_project(session,token,project)
+    #     project_component_instance_mapping = dict()
+    #     for instance in instances:
+    #         project_component_instance_mapping[instance] = generate_component_name_from_instance_name(instance)
 
         # table_data = [(key, value) for key, value in project_component_instance_mapping.items()]
         # print(tabulate(table_data, headers=["instanceName", "componentName"], tablefmt="grid"))
-        batch_update_instance_component_name(project,project_component_instance_mapping)
+        # batch_update_instance_component_name(project,project_component_instance_mapping)
 
 
 
@@ -113,6 +114,12 @@ if __name__ == '__main__':
     #     zones = project_zone_mapping[common_project_name]
     #     if len(zones) != 0:
     #         batch_update_zone_name(project,zones)
+
+
+    # # Move systems
+    # all_projects = get_projects_in_system(session, token, "", "all")
+    # for project in all_projects:
+    #     update_system_for_project(session, token, project, "", "")
 
 
 

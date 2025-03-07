@@ -54,3 +54,24 @@ def get_projects_in_system(session: requests.Session,token: str, systemID: str, 
 
 
     return projectList
+
+def update_system_for_project(session: requests.Session, token: str, project_name:str, system_display_name: str, system_id: str):
+    headers['X-CSRF-TOKEN'] = token
+    headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+    params = {
+        'tzOffset': '-18000000',
+        'ignoreHashVerify': True
+    }
+
+    system_info_list = [{"customerName": username, "systemName": system_id,
+                      "systemDisplayName": system_display_name,
+                      "projectNameSet": [{"projectName": project_name, "userName": username}]}]
+    form_data = {
+        'customerName': username,
+        'operation': 'addProjectToSystem',
+        'systemInfo': json.dumps(system_info_list),
+    }
+
+    response = session.post(url, headers=headers, params=params, data=form_data)
+    print(f'Status Code: {response.status_code}')
+    print(f'Response Text: {response.text}')
