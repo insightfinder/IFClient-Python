@@ -1,6 +1,8 @@
+from collections import defaultdict
 import copy
 
 import requests
+from api.createCausalGroup import create_causal_group
 from api.login import login
 from api.systemframework import update_system_for_project
 from api.update_metric_project_settings import update_metric_project_settings
@@ -10,7 +12,6 @@ from config import project_keywords_settings, username
 from api.loadProjectsMetaDataInfo import list_instances_in_project
 from api.agentUploadInstanceMetadata import batch_update_instance_component_name,batch_update_zone_name
 from api.projectsetting import get_project_settings,update_project_settings
-from tabulate import tabulate
 from config import component_level_pattern_name_settings
 import json
 from api.groupingstorage import get_zones_for_instances
@@ -98,18 +99,26 @@ if __name__ == '__main__':
 
 
 
-    # project_zone_mapping = dict()
-    # metric_projects = get_projects_in_system(session, token, systemID, "metric")
+    project_zone_mapping = defaultdict(list)
+    projects = get_projects_in_system(session, token, "8f227b2b6b6cd91e779692479666142055fc3497", "all")
+    for project in projects:
+        common_project_name = project.replace("-metrics-1","").replace("-metrics","").replace("-problems-1","").replace("-problems","")
+        project_zone_mapping[common_project_name].append(project)
+    for common_project_name in project_zone_mapping:
+        create_causal_group(session, token, project_zone_mapping[common_project_name], common_project_name, username)
+        print("Created causal group for project: {}".format(common_project_name))
+        break
+    
     # for project in metric_projects:
     #     instances = list_instances_in_project(session, token, project)
     #     if len(instances) == 0:
     #         zones = dict()
     #     else:
     #         zones = get_zones_for_instances(session, token, project, instances)
-    #
+    
     #     common_project_name = project.replace("-metrics-1","").replace("-metrics","")
     #     project_zone_mapping[common_project_name] = zones
-    #
+    
     # alert_projects = get_projects_in_system(session, token, systemID, "alert")
     # for project in alert_projects:
     #     instances = list_instances_in_project(session, token, project)
@@ -126,18 +135,18 @@ if __name__ == '__main__':
 
 
     # Update other project settings
-    original_settings = get_project_settings(session,token,"maoyu-test-batch-settings-api-2")
-    print(json.dumps(original_settings))
+    # original_settings = get_project_settings(session,token,"maoyu-test-batch-settings-api-2")
+    # print(json.dumps(original_settings))
 
-    new_settings = copy.deepcopy(original_settings)
-    new_settings['rootCauseCountThreshold'] = 1
-    new_settings['rootCauseProbabilityThreshold'] = 0.4
-    new_settings['causalPredictionSetting'] = "1"
-    new_settings['rootCauseRankSetting'] = "2"
-    new_settings['maximumRootCauseResultSize'] = 10
-    new_settings['multiHopSearchLevel'] = 5
+    # new_settings = copy.deepcopy(original_settings)
+    # new_settings['rootCauseCountThreshold'] = 1
+    # new_settings['rootCauseProbabilityThreshold'] = 0.4
+    # new_settings['causalPredictionSetting'] = "1"
+    # new_settings['rootCauseRankSetting'] = "2"
+    # new_settings['maximumRootCauseResultSize'] = 10
+    # new_settings['multiHopSearchLevel'] = 5
 
-    update_project_settings(session,token,"maoyu-test-batch-settings-api-2",new_settings)
+    # update_project_settings(session,token,"maoyu-test-batch-settings-api-2",new_settings)
 
 
 
