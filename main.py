@@ -1,3 +1,5 @@
+import copy
+
 import requests
 from api.login import login
 from api.systemframework import update_system_for_project
@@ -7,6 +9,7 @@ from api.systemframework import get_projects_in_system
 from config import project_keywords_settings, username
 from api.loadProjectsMetaDataInfo import list_instances_in_project
 from api.agentUploadInstanceMetadata import batch_update_instance_component_name,batch_update_zone_name
+from api.projectsetting import get_project_settings,update_project_settings
 from tabulate import tabulate
 from config import component_level_pattern_name_settings
 import json
@@ -122,6 +125,19 @@ if __name__ == '__main__':
     #     update_system_for_project(session, token, project, "", "")
 
 
+    # Update other project settings
+    original_settings = get_project_settings(session,token,"maoyu-test-batch-settings-api-2")
+    print(json.dumps(original_settings))
+
+    new_settings = copy.deepcopy(original_settings)
+    new_settings['rootCauseCountThreshold'] = 1
+    new_settings['rootCauseProbabilityThreshold'] = 0.4
+    new_settings['causalPredictionSetting'] = "1"
+    new_settings['rootCauseRankSetting'] = "2"
+    new_settings['maximumRootCauseResultSize'] = 10
+    new_settings['multiHopSearchLevel'] = 5
+
+    update_project_settings(session,token,"maoyu-test-batch-settings-api-2",new_settings)
 
 
 

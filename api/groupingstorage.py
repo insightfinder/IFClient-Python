@@ -1,7 +1,7 @@
 import json
 
 import requests
-from config import *
+from config import base_url,user_agent
 
 def get_grouping_storage_for_instances(session: requests.Session, token: str ,project: str,instances: list[str]):
     data = {
