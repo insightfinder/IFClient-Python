@@ -1,0 +1,23 @@
+apiVersion: v1 # Configuration version
+type: projectBase # Type of schema
+
+# Required fields to identify projet and owner
+project: "user-sample-log-project"
+userName: "user1"
+
+# Optional fields for settings
+projectDisplayName: "Test Name for Demo"
+cValue: 1
+pValue: 0.95
+showInstanceDown: true
+retentionTime: 200
+UBLRetentionTime: 90
+
+# The following two settings support files to be added recursively for now
+instanceGroupingUpdate:
+  files:
+    - "../instance-grouping-data/grouping-data-1.yaml"
+    - "../instance-grouping-data/grouping-data-2.yaml"
+componentMetricSettingOverallModelList:
+  files:
+    - "../component-metric-setting/metric-setting-*.yaml"

@@ -1,0 +1,12 @@
+# tool_config.yaml
+apiVersion: v1 # Configuration version
+type: toolConfig # Type of configuration for schema validation
+
+# BaseURL for InsightFinder deployment
+baseUrl: "https://stg.insightfinder.com"
+
+# Project configurations
+projectBaseConfigs:
+  files:
+    - ./base/project_base1.yaml
+    - ./base/project_base2.yaml # Paths can be absolute too. Relative paths must be relative to current file 
