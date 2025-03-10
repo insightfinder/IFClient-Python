@@ -107,7 +107,6 @@ if __name__ == '__main__':
     for common_project_name in project_zone_mapping:
         create_causal_group(session, token, project_zone_mapping[common_project_name], common_project_name, username)
         print("Created causal group for project: {}".format(common_project_name))
-        break
     
     # for project in metric_projects:
     #     instances = list_instances_in_project(session, token, project)
