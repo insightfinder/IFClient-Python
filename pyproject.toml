@@ -1,5 +1,5 @@
 [project]
-name = "ifclient"
+name = "insightfinder-client"
 version = "0.1.0"
 description = "A CLI tool to configure and change InsightFinder project settings"
 authors = [
