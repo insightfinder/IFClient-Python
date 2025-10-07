@@ -35,10 +35,11 @@ ifclient --help
 
 ## Usage
 1. Create configurations files
+
 Copy the folder under `docs/examples` to your current folder and edit the files.
 
 
-2. Setup the InsightFinder credentials as environment variables.
+3. Setup the InsightFinder credentials as environment variables.
 ```shell
 export insightfinderusername_PASSWORD=insightfinderpassword
 ```
