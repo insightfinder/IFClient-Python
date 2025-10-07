@@ -4,6 +4,14 @@ A command-line tool to validate, merge, plan, and apply configuration files for 
 
 ## Installation
 
+### From PyPI
+Run the following command to install the tool:
+```shell
+pip install insightfinder-client
+ifclient --help
+```
+
+### From Source
 1. **Clone the Repository:**
 
    ```bash
